@@ -1,3 +1,4 @@
+"use client";
 import { motion, useScroll, useTransform } from "motion/react";
 import { useState, useEffect } from "react";
 import { Menu, X, Sparkles } from "lucide-react";
@@ -14,7 +15,7 @@ const navItems = [
   { id: "types", label: "Jenis-jenis" },
   { id: "examples", label: "Contoh" },
   { id: "facts", label: "Fakta" },
-  { id: "qa", label: "FaQ" }
+  { id: "qa", label: "FaQ" },
 ];
 
 export default function Navbar() {
@@ -23,33 +24,27 @@ export default function Navbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [hasScrolled, setHasScrolled] = useState(false);
   const { scrollY } = useScroll();
-  
+
   const backgroundColor = useTransform(
     scrollY,
     [0, 100],
     ["rgba(2, 6, 23, 0)", "rgba(2, 6, 23, 0.95)"]
   );
 
-  const borderOpacity = useTransform(
-    scrollY,
-    [0, 100],
-    [0, 0.3]
-  );
+  const borderOpacity = useTransform(scrollY, [0, 100], [0, 0.3]);
 
   useEffect(() => {
     const handleScroll = () => {
       const scrollPos = window.scrollY;
       setIsScrolled(scrollPos > 50);
-      
-      // Set hasScrolled to true after user scrolls at least 10px
-      if (scrollPos > 10 && !hasScrolled) {
-        setHasScrolled(true);
-      }
-      
-      // Detect active section
-      const sections = navItems.map(item => document.getElementById(item.id));
-      const scrollPosition = scrollPos + 150;
 
+      if (scrollPos > 10 && !hasScrolled) setHasScrolled(true);
+
+      // Detect active section
+      const sections = navItems.map((item) =>
+        document.getElementById(item.id)
+      );
+      const scrollPosition = scrollPos + 150;
       for (let i = sections.length - 1; i >= 0; i--) {
         const section = sections[i];
         if (section && section.offsetTop <= scrollPosition) {
@@ -60,23 +55,20 @@ export default function Navbar() {
     };
 
     window.addEventListener("scroll", handleScroll);
-    handleScroll(); // Initial check
+    handleScroll();
     return () => window.removeEventListener("scroll", handleScroll);
   }, [hasScrolled]);
 
-  const scrollToSection = (id: string) => {
+  const scrollToSection = (id) => {
     const element = document.getElementById(id);
     if (element) {
-      // Close mobile menu immediately
       setIsMenuOpen(false);
-      
-      // Small delay to allow menu to start closing, then scroll
       setTimeout(() => {
         const offset = 80;
         const elementPosition = element.offsetTop - offset;
         window.scrollTo({
           top: elementPosition,
-          behavior: "smooth"
+          behavior: "smooth",
         });
       }, 100);
     }
@@ -89,10 +81,10 @@ export default function Navbar() {
         className="fixed top-0 left-0 right-0 z-50 backdrop-blur-lg"
       >
         <motion.div
-          style={{ 
-            borderBottomColor: `rgba(139, 92, 246, ${borderOpacity})` 
+          style={{
+            borderBottomColor: `rgba(139, 92, 246, ${borderOpacity})`,
           }}
-          className="border-b"
+          className="border-b relative"
         >
           <div className="container mx-auto px-4">
             <div className="flex items-center justify-between h-16 md:h-20">
@@ -125,10 +117,10 @@ export default function Navbar() {
                     }`}
                     initial={{ opacity: 0, y: -20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    transition={{ 
-                      duration: 0.5, 
+                    transition={{
+                      duration: 0.5,
                       delay: index * 0.08,
-                      ease: [0.645, 0.045, 0.355, 1]
+                      ease: [0.645, 0.045, 0.355, 1],
                     }}
                     whileHover={{ scale: 1.05 }}
                     whileTap={{ scale: 0.95 }}
@@ -140,11 +132,11 @@ export default function Navbar() {
                         initial={{ opacity: 0, scale: 0.8 }}
                         animate={{ opacity: 1, scale: 1 }}
                         exit={{ opacity: 0, scale: 0.8 }}
-                        transition={{ 
-                          type: "spring", 
-                          stiffness: 400, 
+                        transition={{
+                          type: "spring",
+                          stiffness: 400,
                           damping: 35,
-                          mass: 0.8
+                          mass: 0.8,
                         }}
                       />
                     )}
@@ -166,63 +158,54 @@ export default function Navbar() {
                 )}
               </motion.button>
             </div>
+
+            {/* Mobile Menu (Dropdown) */}
+            <motion.div
+              initial={false}
+              animate={{
+                scaleY: isMenuOpen ? 1 : 0,
+                opacity: isMenuOpen ? 1 : 0,
+                originY: 0,
+              }}
+              transition={{
+                duration: 0.3,
+                ease: [0.645, 0.045, 0.355, 1],
+              }}
+              className="absolute top-full left-0 right-0 z-40 md:hidden overflow-hidden bg-slate-950/98 backdrop-blur-lg border-b border-purple-500/30 shadow-2xl origin-top rounded-b-2xl"
+              style={{ pointerEvents: isMenuOpen ? "auto" : "none" }}
+            >
+              <div className="px-4 py-4 space-y-2 max-h-[calc(100vh-80px)] overflow-y-auto">
+                {navItems.map((item, index) => (
+                  <motion.button
+                    key={item.id}
+                    onClick={() => {
+                      scrollToSection(item.id);
+                      setHasScrolled(true);
+                    }}
+                    className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-300 ${
+                      activeSection === item.id && hasScrolled
+                        ? "bg-gradient-to-r from-purple-600/40 to-blue-600/40 border border-purple-400/50 text-white"
+                        : "text-blue-200 hover:bg-slate-800/50 hover:text-white"
+                    }`}
+                    initial={{ opacity: 0, x: -20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{
+                      duration: 0.4,
+                      delay: isMenuOpen ? index * 0.06 : 0,
+                      ease: [0.645, 0.045, 0.355, 1],
+                    }}
+                    whileTap={{ scale: 0.98 }}
+                  >
+                    {item.label}
+                  </motion.button>
+                ))}
+              </div>
+            </motion.div>
           </div>
         </motion.div>
       </motion.nav>
 
-      {/* Mobile Menu */}
-      <motion.div
-        initial={false}
-        animate={{
-          height: isMenuOpen ? "auto" : 0,
-          opacity: isMenuOpen ? 1 : 0
-        }}
-        transition={{ 
-          duration: 0.3,
-          ease: [0.645, 0.045, 0.355, 1]
-        }}
-        className="fixed top-[64px] left-0 right-0 z-40 md:hidden overflow-hidden"
-        style={{ pointerEvents: isMenuOpen ? "auto" : "none" }}
-      >
-        <motion.div
-          initial={false}
-          animate={{ y: isMenuOpen ? 0 : -20 }}
-          transition={{ 
-            duration: 0.3,
-            ease: [0.645, 0.045, 0.355, 1]
-          }}
-          className="bg-slate-950/98 backdrop-blur-lg border-b border-purple-500/30 shadow-2xl w-full"
-        >
-          <div className="px-4 py-4 space-y-2 max-h-[calc(100vh-80px)] overflow-y-auto">
-            {navItems.map((item, index) => (
-              <motion.button
-                key={item.id}
-                onClick={() => {
-                  scrollToSection(item.id);
-                  setHasScrolled(true);
-                }}
-                className={`w-full text-left px-4 py-3 rounded-lg transition-all duration-300 ${
-                  activeSection === item.id && hasScrolled
-                    ? "bg-gradient-to-r from-purple-600/40 to-blue-600/40 border border-purple-400/50 text-white"
-                    : "text-blue-200 hover:bg-slate-800/50 hover:text-white"
-                }`}
-                initial={{ opacity: 0, x: -20 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ 
-                  duration: 0.4, 
-                  delay: isMenuOpen ? index * 0.06 : 0,
-                  ease: [0.645, 0.045, 0.355, 1]
-                }}
-                whileTap={{ scale: 0.98 }}
-              >
-                {item.label}
-              </motion.button>
-            ))}
-          </div>
-        </motion.div>
-      </motion.div>
-
-      {/* Backdrop for mobile menu */}
+      {/* Backdrop for Mobile Menu */}
       {isMenuOpen && (
         <motion.div
           initial={{ opacity: 0 }}
@@ -230,9 +213,12 @@ export default function Navbar() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.2 }}
           onClick={() => setIsMenuOpen(false)}
-          className="fixed inset-0 bg-black/60 z-30 md:hidden top-[64px]"
+          className="fixed inset-0 bg-black/60 z-30 md:hidden"
         />
       )}
+
+      {/* Spacer biar konten ga ketiban navbar */}
+      <div className="h-[80px]" />
     </>
   );
 }
