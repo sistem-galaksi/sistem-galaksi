@@ -770,8 +770,8 @@
     height: 1px;
   }
 
-  .max-h-\[calc\(100vh-64px\)\] {
-    max-height: calc(100vh - 64px);
+  .max-h-\[calc\(100vh-80px\)\] {
+    max-height: calc(100vh - 80px);
   }
 
   .min-h-\[300px\] {

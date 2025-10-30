@@ -191,9 +191,9 @@ export default function Navbar() {
             duration: 0.3,
             ease: [0.645, 0.045, 0.355, 1]
           }}
-          className="bg-slate-950/98 backdrop-blur-lg border-b border-purple-500/30 shadow-2xl"
+          className="bg-slate-950/98 backdrop-blur-lg border-b border-purple-500/30 shadow-2xl w-full"
         >
-          <div className="container mx-auto px-4 py-4 space-y-2 max-h-[calc(100vh-64px)] overflow-y-auto">
+          <div className="px-4 py-4 space-y-2 max-h-[calc(100vh-80px)] overflow-y-auto">
             {navItems.map((item, index) => (
               <motion.button
                 key={item.id}
