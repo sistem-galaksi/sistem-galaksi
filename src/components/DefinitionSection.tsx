@@ -26,8 +26,8 @@ export default function DefinitionSection() {
           className="max-w-5xl mx-auto"
         >
           {/* Title */}
-          <div className="text-center mb-20">
-            <h2 className="text-5xl md:text-4x2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-4">
+          <div className="text-center mb-16">
+            <h2 className="text-4xl md:text-5xl text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-purple-400 mb-4">
               Pengertian Sistem Galaksi
             </h2>
             <div className="w-24 h-1 bg-gradient-to-r from-blue-400 to-purple-400 mx-auto" />

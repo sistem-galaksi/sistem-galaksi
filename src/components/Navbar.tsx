@@ -14,7 +14,7 @@ const navItems = [
   { id: "types", label: "Jenis-jenis" },
   { id: "examples", label: "Contoh" },
   { id: "facts", label: "Fakta" },
-  { id: "qa", label: "FAQ" }
+  { id: "qa", label: "FaQ" }
 ];
 
 export default function Navbar() {
@@ -67,13 +67,18 @@ export default function Navbar() {
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
-      const offset = 80;
-      const elementPosition = element.offsetTop - offset;
-      window.scrollTo({
-        top: elementPosition,
-        behavior: "smooth"
-      });
+      // Close mobile menu immediately
       setIsMenuOpen(false);
+      
+      // Small delay to allow menu to start closing, then scroll
+      setTimeout(() => {
+        const offset = 80;
+        const elementPosition = element.offsetTop - offset;
+        window.scrollTo({
+          top: elementPosition,
+          behavior: "smooth"
+        });
+      }, 100);
     }
   };
 
@@ -173,21 +178,22 @@ export default function Navbar() {
           opacity: isMenuOpen ? 1 : 0
         }}
         transition={{ 
-          duration: 0.4,
+          duration: 0.3,
           ease: [0.645, 0.045, 0.355, 1]
         }}
-        className="fixed top-16 left-0 right-0 z-40 md:hidden overflow-hidden"
+        className="fixed top-[64px] left-0 right-0 z-40 md:hidden overflow-hidden"
+        style={{ pointerEvents: isMenuOpen ? "auto" : "none" }}
       >
         <motion.div
           initial={false}
           animate={{ y: isMenuOpen ? 0 : -20 }}
           transition={{ 
-            duration: 0.4,
+            duration: 0.3,
             ease: [0.645, 0.045, 0.355, 1]
           }}
-          className="bg-slate-950/98 backdrop-blur-lg border-b border-purple-500/30"
+          className="bg-slate-950/98 backdrop-blur-lg border-b border-purple-500/30 shadow-2xl"
         >
-          <div className="container mx-auto px-4 py-4 space-y-2">
+          <div className="container mx-auto px-4 py-4 space-y-2 max-h-[calc(100vh-64px)] overflow-y-auto">
             {navItems.map((item, index) => (
               <motion.button
                 key={item.id}
@@ -222,8 +228,9 @@ export default function Navbar() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
           onClick={() => setIsMenuOpen(false)}
-          className="fixed inset-0 bg-black/50 z-30 md:hidden"
+          className="fixed inset-0 bg-black/60 z-30 md:hidden top-[64px]"
         />
       )}
     </>
